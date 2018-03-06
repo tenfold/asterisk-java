@@ -148,6 +148,7 @@ public class ManagerReaderImpl implements ManagerReader
     {
         final Map<String, Object> buffer = new HashMap<>();
         String line;
+        List<String> lines = new ArrayList<>();
 
         if (socket == null)
         {
@@ -162,6 +163,7 @@ public class ManagerReaderImpl implements ManagerReader
             // main loop
             while (!this.die && (line = socket.readLine()) != null)
             {
+				lines.add(line);
                 // maybe we will find a better way to identify the protocol
                 // identifier but for now
                 // this works quite well.
@@ -226,7 +228,7 @@ public class ManagerReaderImpl implements ManagerReader
                         // TODO tracing
                         // logger.debug("attempting to build event: " +
                         // buffer.get("event"));
-                        ManagerEvent event = buildEvent(source, buffer);
+                        ManagerEvent event = buildEvent(source, buffer, lines);
                         if (event != null)
                         {
                             dispatcher.dispatchEvent(event);
@@ -268,6 +270,7 @@ public class ManagerReaderImpl implements ManagerReader
                     }
 
                     buffer.clear();
+					lines.clear();
                 }
             }
             this.dead = true;
@@ -356,7 +359,7 @@ public class ManagerReaderImpl implements ManagerReader
         return response;
     }
 
-    private ManagerEvent buildEvent(Object source, Map<String, Object> buffer)
+    private ManagerEvent buildEvent(Object source, Map<String, Object> buffer, List<String> lines)
     {
         ManagerEvent event;
 
@@ -365,6 +368,7 @@ public class ManagerReaderImpl implements ManagerReader
         if (event != null)
         {
             event.setDateReceived(DateUtil.getDate());
+			event.setLines(lines.toArray(new String[0]));
         }
 
         return event;

@@ -51,6 +51,24 @@ public abstract class ManagerEvent extends EventObject
     protected String exten;
     protected String callerIdNum;
     protected String callerIdName;
+	protected String[] lines;
+    /**
+     * Returns the array of strings in the message.
+     *
+     * @return
+     * @since 0.3
+     */
+
+    public String[] getLines()
+    {
+        return lines;
+    }
+
+    public void setLines(String[] lines)
+    {
+        this.lines = lines;
+    }
+
 
     /**
      * Returns the Caller ID name of the caller's channel.
